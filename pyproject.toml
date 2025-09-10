@@ -46,6 +46,10 @@ hunyuan = [
 [project.scripts]
 image-gen = "cli.gen_image:main"
 image-gen-mcp = "imagen.mcp:main"
+image-gen-mock = "cli.gen_image_mock:main"
+image-gen-gemini = "cli.gen_image_gemini:main"
+image-gen-qwen = "cli.gen_image_qwen:main"
+image-gen-hunyuan = "cli.gen_image_hunyuan:main"
 
 [tool.pytest.ini_options]
 addopts = "-q"

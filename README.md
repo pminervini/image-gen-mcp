@@ -18,6 +18,13 @@ Note: The Gemini backend requires a `GEMINI_API_KEY`. The mock backend works wit
   - `image-gen "A scenic lake at sunrise" --backend qwen --fmt png --output lake.png`
   - `image-gen "A futuristic cityscape" --backend hunyuan --fmt jpg --output city.jpg`
 
+### Backend-Specific CLIs (direct)
+
+- Mock: `image-gen-mock "A red square" --fmt png --output red.png`
+- Gemini: `image-gen-gemini "A beach at sunset" --fmt png --output beach.png`
+- Qwen (diffusers, local): `image-gen-qwen "a cozy cabin" --fmt png --output cabin.png`
+- Hunyuan (local upstream pipeline): `image-gen-hunyuan "a dragon" --fmt jpg --output dragon.jpg`
+
 ## MCP Server
 
 Run the MCP server over stdio:
