@@ -32,7 +32,7 @@ Tools:
 
 - Set `GEMINI_API_KEY` in your environment.
 - By default, the code selects `gemini` backend automatically if the API key is present; otherwise it uses `mock`.
-- The implementation uses the `google-generativeai` package and targets the image generation model (`imagegeneration`). If your SDK version differs, set `IMAGE_GEN_BACKEND=mock` or update the model name in `image_gen/backends/gemini_backend.py`.
+- The implementation uses the `google-generativeai` package and targets the image generation model (`imagegeneration`). If your SDK version differs, set `IMAGE_GEN_BACKEND=mock` or update the model name in `image_gen/backends/gemini.py`.
 
 ## Qwen Backend (diffusers)
 

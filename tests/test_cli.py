@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import annotations
 
 import os
@@ -21,4 +23,3 @@ def test_cli_mock(tmp_path: Path, monkeypatch):
     gen_image.main(argv)
     assert out_file.exists()
     assert out_file.stat().st_size > 100
-

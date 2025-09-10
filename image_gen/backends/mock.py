@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import annotations
 
 import io
@@ -70,4 +72,3 @@ def _parse_size(size: str) -> tuple[int, int]:
 def fmt_lower(fmt: str) -> str:
     f = fmt.lower()
     return "jpg" if f == "jpeg" else f
-

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -23,4 +25,3 @@ class ImageBackend:
         negative_prompt: str | None = None,
     ) -> ImageResult:
         raise NotImplementedError
-

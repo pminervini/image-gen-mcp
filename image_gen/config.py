@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 from dataclasses import dataclass
 
@@ -12,4 +14,3 @@ class Settings:
 
 def get_settings() -> Settings:
     return Settings()
-

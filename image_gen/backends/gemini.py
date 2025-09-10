@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import annotations
 
 import base64
@@ -86,4 +88,3 @@ class GeminiBackend(ImageBackend):
         content_type = f"image/{'jpeg' if fmt_lower == 'jpg' else fmt_lower}"
         filename = f"gemini_{abs(hash(prompt)) % 1_000_000}.{fmt_lower}"
         return ImageResult(content=content, content_type=content_type, format=fmt_lower, filename=filename)
-
