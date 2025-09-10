@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "image-gen-mcp"
+version = "0.1.0"
+description = "Simple MCP server and HTTP API for image generation (Gemini + pluggable backends)"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "Image Gen MCP" }]
+license = { text = "MIT" }
+dependencies = [
+  "google-generativeai>=0.6.0",
+  "pillow>=10.0.0",
+  "mcp>=1.2.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "pytest-asyncio>=0.23"
+]
+qwen = [
+  "diffusers>=0.26.0",
+  "torch>=2.1.0",
+  "accelerate>=0.30.0",
+  "safetensors>=0.4.2"
+]
+hunyuan = [
+  "torch>=2.1.0",
+  "torchvision>=0.16.0",
+  "torchaudio>=2.1.0",
+  "diffusers>=0.32.0",
+  "huggingface-hub>=0.34.0",
+  "transformers[accelerate,tiktoken]>=4.56.0",
+  "einops>=0.7.0",
+  "omegaconf>=2.3.0",
+  "loguru>=0.7.0",
+  "safetensors>=0.4.5",
+  "numpy>=1.26.0",
+  "tqdm>=4.65.0",
+  "modelscope>=1.18.0"
+]
+
+[project.scripts]
+image-gen = "cli.gen_image:main"
+image-gen-mcp = "image_gen.mcp:main"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = ["."]
+
+[tool.setuptools]
+packages = { find = { include = ["image_gen*", "cli*"] } }
