@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from __future__ import annotations
+# Usage examples (Mock backend, offline):
+#   image-gen-mock "A red square" --fmt png --output red.png
+#   python -m cli.gen_image_mock "Hello world" --size 512x512 --fmt jpg --output hello.jpg
+# Notes:
+#   - No external services required; uses Pillow to synthesize images.
+#   - Supports --seed, --size, --negative-prompt.
 
 import argparse
 import asyncio
@@ -39,4 +44,3 @@ def main(argv: list[str] | None = None):
 
 if __name__ == "__main__":  # pragma: no cover
     main()
-

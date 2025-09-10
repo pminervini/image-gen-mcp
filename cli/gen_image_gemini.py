@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from __future__ import annotations
+# Usage examples (Gemini backend):
+#   export GEMINI_API_KEY=... && image-gen-gemini "A beach at sunset" --fmt png --output beach.png
+#   python -m cli.gen_image_gemini "A robot" --size 512x512 --fmt jpg --output robot.jpg
+# Notes:
+#   - Requires google-generativeai and GEMINI_API_KEY set in the environment.
 
 import argparse
 import asyncio
@@ -38,4 +42,3 @@ def main(argv: list[str] | None = None):
 
 if __name__ == "__main__":  # pragma: no cover
     main()
-

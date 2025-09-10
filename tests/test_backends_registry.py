@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import annotations
-
 import pytest
 from imagen.backends import get_backend
 

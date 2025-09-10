@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from __future__ import annotations
+# Usage examples (Hunyuan local upstream pipeline):
+#   pip install -e .[hunyuan]   # once, plus install upstream 'hyimage' package
+#   export HUNYUANIMAGE_V2_1_MODEL_ROOT=/path/to/ckpts
+#   image-gen-hunyuan "a dragon" --fmt jpg --output dragon.jpg
+#   python -m cli.gen_image_hunyuan "a sunny field" --size 1024x1024 --fmt png --output field.png
+# Notes:
+#   - Runs locally; selects CUDA → MPS → CPU and an efficient dtype.
+#   - Accepts --seed, --size, --negative-prompt; see README for setup.
 
 import argparse
 import asyncio
@@ -43,4 +50,3 @@ def main(argv: list[str] | None = None):
 
 if __name__ == "__main__":  # pragma: no cover
     main()
-

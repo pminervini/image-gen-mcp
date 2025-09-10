@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from __future__ import annotations
+# Usage examples (Qwen via diffusers, local):
+#   pip install -e .[qwen]   # once
+#   image-gen-qwen "a cozy cabin" --size 768x768 --fmt png --output cabin.png
+#   python -m cli.gen_image_qwen "A dragon" --seed 42 --fmt jpg --output dragon.jpg
+# Notes:
+#   - Prefers CUDA → MPS → CPU automatically.
+#   - Installs diffusers/torch and related extras via the `[qwen]` extra.
 
 import argparse
 import asyncio
@@ -44,4 +50,3 @@ def main(argv: list[str] | None = None):
 
 if __name__ == "__main__":  # pragma: no cover
     main()
-
