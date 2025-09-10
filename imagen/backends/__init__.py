@@ -14,10 +14,10 @@ def get_backend(preferred: str | None = None) -> ImageBackend:
     if choice in ("gemini", "google", "imagen"):
         return GeminiBackend(api_key=settings.gemini_api_key)
     if choice in ("qwen", "qwen-image", "qwen_image"):
-        mod = importlib.import_module("image_gen.backends.qwen")
+        mod = importlib.import_module("imagen.backends.qwen")
         return mod.QwenImageBackend()
     if choice in ("hunyuan", "hunyuanimage", "hunyuan-image"):
-        mod = importlib.import_module("image_gen.backends.hunyuan")
+        mod = importlib.import_module("imagen.backends.hunyuan")
         return mod.HunyuanBackend()
     # auto
     if settings.gemini_api_key:

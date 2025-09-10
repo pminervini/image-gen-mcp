@@ -7,7 +7,7 @@ import argparse
 import asyncio
 from pathlib import Path
 
-from image_gen.backends import get_backend
+from imagen.backends import get_backend
 
 
 async def _run_async(args):

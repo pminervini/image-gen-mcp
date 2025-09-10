@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "image-gen-mcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "Simple MCP server and HTTP API for image generation (Gemini + pluggable backends)"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -45,11 +45,11 @@ hunyuan = [
 
 [project.scripts]
 image-gen = "cli.gen_image:main"
-image-gen-mcp = "image_gen.mcp:main"
+image-gen-mcp = "imagen.mcp:main"
 
 [tool.pytest.ini_options]
 addopts = "-q"
 pythonpath = ["."]
 
 [tool.setuptools]
-packages = { find = { include = ["image_gen*", "cli*"] } }
+packages = { find = { include = ["imagen*", "cli*"] } }

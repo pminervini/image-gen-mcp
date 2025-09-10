@@ -19,7 +19,7 @@ async def run_stdio():
             "The 'mcp' package is required for stdio mode. Install with: pip install mcp"
         ) from e
 
-    server = Server("image-gen-mcp")
+    server = Server("imagen-mcp")
 
     @server.tool()
     async def generate_image(prompt: str, size: str = "1024x1024", fmt: str = "png", backend: Optional[str] = None) -> dict:
@@ -45,7 +45,7 @@ async def run_stdio():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Image Gen MCP Server")
+    parser = argparse.ArgumentParser(description="Imagen MCP Server")
     parser.add_argument("--transport", choices=["stdio"], default="stdio")
     args = parser.parse_args()
     if args.transport == "stdio":

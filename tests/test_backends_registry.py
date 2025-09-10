@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pytest
-from image_gen.backends import get_backend
+from imagen.backends import get_backend
 
 
 def test_get_backend_qwen_instance():

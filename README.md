@@ -1,4 +1,4 @@
-# Image Gen MCP
+# Imagen MCP
 
 Simple MCP server for generating images, plus a direct CLI. Supports Google Gemini, Qwen/Qwen-Image (diffusers, local), and Tencent HunyuanImage-2.1 (local via upstream pipeline), with a built‑in mock backend for offline/dev usage.
 
@@ -32,7 +32,7 @@ Tools:
 
 - Set `GEMINI_API_KEY` in your environment.
 - By default, the code selects `gemini` backend automatically if the API key is present; otherwise it uses `mock`.
-- The implementation uses the `google-generativeai` package and targets the image generation model (`imagegeneration`). If your SDK version differs, set `IMAGE_GEN_BACKEND=mock` or update the model name in `image_gen/backends/gemini.py`.
+- The implementation uses the `google-generativeai` package and targets the image generation model (`imagegeneration`). If your SDK version differs, set `IMAGE_GEN_BACKEND=mock` or update the model name in `imagen/backends/gemini.py`.
 
 ## Qwen Backend (diffusers)
 
@@ -61,7 +61,7 @@ Tools:
 
 ## Project Layout
 
-- `image_gen/` — package with MCP server and backends
+- `imagen/` — package with MCP server and backends
 - `cli/` — CLI (`gen_image.py`)
 - `tests/` — unit tests
 
