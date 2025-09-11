@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Usage examples (Gemini backend):
-#   export GEMINI_API_KEY=... && image-gen-gemini "A beach at sunset" --fmt png --output beach.png
-#   python -m cli.gen_image_gemini "A robot" --size 512x512 --fmt jpg --output robot.jpg
+# Usage examples (Mock backend, offline):
+#   image-gen-mock "A red square" --fmt png --output red.png
+#   python -m cli.mock_cli "Hello world" --size 512x512 --fmt jpg --output hello.jpg
 # Notes:
-#   - Requires google-generativeai and GEMINI_API_KEY set in the environment.
+#   - No external services required; uses Pillow to synthesize images.
+#   - Supports --seed, --size, --negative-prompt.
 
 import argparse
 import asyncio
 from pathlib import Path
 
-from imagen.backends.gemini import GeminiBackend
+from imagen.backends.mock import MockBackend
 
 
 async def _run_async(args):
-    backend = GeminiBackend()
+    backend = MockBackend()
     result = await backend.generate_image(
         prompt=args.prompt,
         size=args.size,
@@ -28,8 +29,11 @@ async def _run_async(args):
     print(str(out_path))
 
 
-def main(argv: list[str] | None = None):
-    parser = argparse.ArgumentParser(description="Generate an image with Gemini backend")
+from typing import Optional, List
+
+
+def main(argv: Optional[List[str]] = None):
+    parser = argparse.ArgumentParser(description="Generate an image with Mock backend")
     parser.add_argument("prompt", help="Text prompt")
     parser.add_argument("--size", default="1024x1024", help="Size WxH, default 1024x1024")
     parser.add_argument("--fmt", default="png", choices=["png", "jpg", "jpeg", "webp"], help="Image format")

@@ -5,13 +5,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "image-gen-mcp"
 version = "0.2.0"
-description = "Simple MCP server and HTTP API for image generation (Gemini + pluggable backends)"
+description = "Simple MCP Server and HTTP API for image generation (Gemini + pluggable backends)"
 readme = "README.md"
-requires-python = ">=3.9"
-authors = [{ name = "Image Gen MCP" }]
+requires-python = ">=3.11"
+authors = [{ name = "Image Generation MCP Server" }]
 license = { text = "MIT" }
 dependencies = [
-  "google-generativeai>=0.6.0",
+  "google-genai>=1.36.0",
   "pillow>=10.0.0",
   "mcp>=1.2.0"
 ]
@@ -45,12 +45,12 @@ hunyuan = [
 ]
 
 [project.scripts]
-image-gen = "cli.gen_image:main"
+image-gen = "cli.main_cli:main"
 image-gen-mcp = "imagen.mcp:main"
-image-gen-mock = "cli.gen_image_mock:main"
-image-gen-gemini = "cli.gen_image_gemini:main"
-image-gen-qwen = "cli.gen_image_qwen:main"
-image-gen-hunyuan = "cli.gen_image_hunyuan:main"
+image-gen-mock = "cli.mock_cli:main"
+image-gen-gemini = "cli.gemini_cli:main"
+image-gen-qwen = "cli.qwen_cli:main"
+image-gen-hunyuan = "cli.hunyuan_cli:main"
 
 [tool.pytest.ini_options]
 addopts = "-q"

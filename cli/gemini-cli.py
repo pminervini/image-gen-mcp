@@ -1,24 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Usage examples (Qwen via diffusers, local):
-#   pip install -e .[qwen]   # once
-#   image-gen-qwen "a cozy cabin" --size 768x768 --fmt png --output cabin.png
-#   python -m cli.gen_image_qwen "A dragon" --seed 42 --fmt jpg --output dragon.jpg
+# Usage examples (Gemini backend):
+#   export GEMINI_API_KEY=... && image-gen-gemini "A beach at sunset" --fmt png --output beach.png
+#   python -m cli.gemini_cli "A robot" --size 512x512 --fmt jpg --output robot.jpg
 # Notes:
-#   - Prefers CUDA → MPS → CPU automatically.
-#   - Installs diffusers/torch and related extras via the `[qwen]` extra.
+#   - Requires google-genai and GEMINI_API_KEY set in the environment.
 
 import argparse
 import asyncio
 import sys
 from pathlib import Path
 
-from imagen.backends.qwen import QwenImageBackend
+from imagen.backends.gemini import GeminiBackend
 
 
 async def _run_async(args):
-    backend = QwenImageBackend()
+    backend = GeminiBackend(api_key=getattr(args, "api_key", None))
     result = await backend.generate_image(
         prompt=args.prompt,
         size=args.size,
@@ -31,14 +29,18 @@ async def _run_async(args):
     print(str(out_path))
 
 
-def main(argv: list[str] | None = None):
-    parser = argparse.ArgumentParser(description="Generate an image with Qwen (diffusers) backend")
+from typing import Optional, List
+
+
+def main(argv: Optional[List[str]] = None):
+    parser = argparse.ArgumentParser(description="Generate an image with Gemini backend")
     parser.add_argument("prompt", help="Text prompt")
     parser.add_argument("--size", default="1024x1024", help="Size WxH, default 1024x1024")
     parser.add_argument("--fmt", default="png", choices=["png", "jpg", "jpeg", "webp"], help="Image format")
     parser.add_argument("--seed", type=int, default=None, help="Optional seed")
     parser.add_argument("--negative-prompt", default=None, help="Optional negative prompt")
     parser.add_argument("--output", default=None, help="Output file path")
+    parser.add_argument("--api-key", default=None, help="Gemini API key (overrides env)")
     args = parser.parse_args(argv)
     asyncio.run(_run_async(args))
 

@@ -39,7 +39,7 @@ Tools:
 
 - Set `GEMINI_API_KEY` in your environment.
 - By default, the code selects `gemini` backend automatically if the API key is present; otherwise it uses `mock`.
-- The implementation uses the `google-generativeai` package and targets the image generation model (`imagegeneration`). If your SDK version differs, set `IMAGE_GEN_BACKEND=mock` or update the model name in `imagen/backends/gemini.py`.
+- The implementation uses the `google-genai` package and generates images via `client.models.generate_content` using the image-capable model `gemini-2.5-flash-image-preview`. If your SDK/model availability differs, you can override the model name when constructing the backend or set `IMAGE_GEN_BACKEND=mock`.
 
 ## Qwen Backend (diffusers)
 
@@ -69,7 +69,7 @@ Tools:
 ## Project Layout
 
 - `imagen/` — package with MCP server and backends
-- `cli/` — CLI (`gen_image.py`)
+- `cli/` — CLI (`main-cli.py`)
 - `tests/` — unit tests
 
 ## Notes

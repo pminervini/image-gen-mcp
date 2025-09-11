@@ -3,6 +3,7 @@
 import io
 import os
 import random
+from typing import Optional
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 
@@ -17,8 +18,8 @@ class MockBackend(ImageBackend):
         prompt: str,
         size: str = "1024x1024",
         fmt: str = "png",
-        seed: int | None = None,
-        negative_prompt: str | None = None,
+        seed: Optional[int] = None,
+        negative_prompt: Optional[str] = None,
     ) -> ImageResult:
         w, h = _parse_size(size)
         rng = random.Random(seed)

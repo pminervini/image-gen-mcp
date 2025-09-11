@@ -100,8 +100,8 @@ class HunyuanBackend(ImageBackend):
         prompt: str,
         size: str = "1024x1024",
         fmt: str = "png",
-        seed: int | None = None,
-        negative_prompt: str | None = None,
+        seed: Optional[int] = None,
+        negative_prompt: Optional[str] = None,
     ) -> ImageResult:
         self._ensure_pipe()
         assert self._pipe is not None

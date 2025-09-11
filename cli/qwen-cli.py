@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Usage examples (Hunyuan local upstream pipeline):
-#   pip install -e .[hunyuan]   # once, plus install upstream 'hyimage' package
-#   export HUNYUANIMAGE_V2_1_MODEL_ROOT=/path/to/ckpts
-#   image-gen-hunyuan "a dragon" --fmt jpg --output dragon.jpg
-#   python -m cli.gen_image_hunyuan "a sunny field" --size 1024x1024 --fmt png --output field.png
+# Usage examples (Qwen via diffusers, local):
+#   pip install -e .[qwen]   # once
+#   image-gen-qwen "a cozy cabin" --size 768x768 --fmt png --output cabin.png
+#   python -m cli.qwen_cli "A dragon" --seed 42 --fmt jpg --output dragon.jpg
 # Notes:
-#   - Runs locally; selects CUDA → MPS → CPU and an efficient dtype.
-#   - Accepts --seed, --size, --negative-prompt; see README for setup.
+#   - Prefers CUDA → MPS → CPU automatically.
+#   - Installs diffusers/torch and related extras via the `[qwen]` extra.
 
 import argparse
 import asyncio
+import sys
 from pathlib import Path
 
-from imagen.backends.hunyuan import HunyuanBackend
+from imagen.backends.qwen import QwenImageBackend
 
 
 async def _run_async(args):
-    backend = HunyuanBackend()
+    backend = QwenImageBackend()
     result = await backend.generate_image(
         prompt=args.prompt,
         size=args.size,
@@ -31,8 +31,11 @@ async def _run_async(args):
     print(str(out_path))
 
 
-def main(argv: list[str] | None = None):
-    parser = argparse.ArgumentParser(description="Generate an image with Hunyuan backend")
+from typing import Optional, List
+
+
+def main(argv: Optional[List[str]] = None):
+    parser = argparse.ArgumentParser(description="Generate an image with Qwen (diffusers) backend")
     parser.add_argument("prompt", help="Text prompt")
     parser.add_argument("--size", default="1024x1024", help="Size WxH, default 1024x1024")
     parser.add_argument("--fmt", default="png", choices=["png", "jpg", "jpeg", "webp"], help="Image format")

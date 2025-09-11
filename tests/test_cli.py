@@ -4,7 +4,7 @@ import os
 import sys
 from pathlib import Path
 
-import cli.gen_image as gen_image
+import cli.main_cli as gen_image
 
 
 def test_cli_mock(tmp_path: Path, monkeypatch):

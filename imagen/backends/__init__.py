@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 
 from .base import ImageBackend, ImageResult
-from .mock import MockBackend
-from .gemini import GeminiBackend
 from ..config import get_settings
 import importlib
 
-def get_backend(preferred: str | None = None) -> ImageBackend:
+from typing import Optional
+
+
+def get_backend(preferred: Optional[str] = None) -> ImageBackend:
     settings = get_settings()
     choice = (preferred or settings.backend or "auto").lower()
     if choice == "mock":
-        return MockBackend()
+        mod = importlib.import_module("imagen.backends.mock")
+        return mod.MockBackend()
     if choice in ("gemini", "google", "imagen"):
-        return GeminiBackend(api_key=settings.gemini_api_key)
+        mod = importlib.import_module("imagen.backends.gemini")
+        return mod.GeminiBackend(api_key=settings.gemini_api_key)
     if choice in ("qwen", "qwen-image", "qwen_image"):
         mod = importlib.import_module("imagen.backends.qwen")
         return mod.QwenImageBackend()
@@ -21,13 +24,14 @@ def get_backend(preferred: str | None = None) -> ImageBackend:
         return mod.HunyuanBackend()
     # auto
     if settings.gemini_api_key:
-        return GeminiBackend(api_key=settings.gemini_api_key)
-    return MockBackend()
+        mod = importlib.import_module("imagen.backends.gemini")
+        return mod.GeminiBackend(api_key=settings.gemini_api_key)
+    mod = importlib.import_module("imagen.backends.mock")
+    return mod.MockBackend()
 
 __all__ = [
     "ImageBackend",
     "ImageResult",
-    "MockBackend",
-    "GeminiBackend",
+    # Concrete backend classes are imported lazily
     "get_backend",
 ]

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -19,7 +20,7 @@ class ImageBackend:
         prompt: str,
         size: str = "1024x1024",
         fmt: str = "png",
-        seed: int | None = None,
-        negative_prompt: str | None = None,
+        seed: Optional[int] = None,
+        negative_prompt: Optional[str] = None,
     ) -> ImageResult:
         raise NotImplementedError

@@ -1,88 +1,128 @@
-# -*- coding: utf-8 -*-
+"""Gemini image generation backend using the official google-genai SDK.
+
+This backend intentionally keeps the flow minimal and matches Google’s docs:
+- Image generation: https://ai.google.dev/gemini-api/docs/image-generation
+- Migration guide: https://ai.google.dev/gemini-api/docs/migrate
+"""
 
 import base64
-from typing import Optional
+import io
+import os
+from typing import Optional, Tuple
 
 from .base import ImageBackend, ImageResult
+
+
+def _parse_size(size: str) -> Tuple[int, int]:
+    try:
+        w_s, h_s = size.lower().split("x", 1)
+        w, h = int(w_s), int(h_s)
+        w = max(16, min(w, 4096))
+        h = max(16, min(h, 4096))
+        return w, h
+    except Exception:
+        return 1024, 1024
 
 
 class GeminiBackend(ImageBackend):
     name = "gemini"
 
-    def __init__(self, api_key: Optional[str] = None, model_name: Optional[str] = None):
+    def __init__(self, model_name: Optional[str] = None, api_key: Optional[str] = None):
+        # Per docs, use the image preview model by default.
+        # https://ai.google.dev/gemini-api/docs/image-generation
+        self.model_name = model_name or "gemini-2.5-flash-image-preview"
         self.api_key = api_key
-        self.model_name = model_name or "imagegeneration"
 
     async def generate_image(
         self,
         prompt: str,
         size: str = "1024x1024",
         fmt: str = "png",
-        seed: int | None = None,
-        negative_prompt: str | None = None,
+        seed: Optional[int] = None,
+        negative_prompt: Optional[str] = None,
     ) -> ImageResult:
-        if not self.api_key:
-            raise RuntimeError("GEMINI_API_KEY not set; cannot use Gemini backend. Set BACKEND=mock to use mock.")
+        api_key = self.api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        if not api_key:
+            raise RuntimeError("No Gemini API key found. Set GEMINI_API_KEY or GOOGLE_API_KEY.")
 
-        try:
-            import google.generativeai as genai  # type: ignore
-        except Exception as e:  # pragma: no cover - only hit if dependency missing
-            raise RuntimeError("google-generativeai package not available") from e
+        # Desired output format/mime
+        fmt_l = fmt.lower()
+        desired_mime = f"image/{'jpeg' if fmt_l == 'jpg' else fmt_l}"
 
-        genai.configure(api_key=self.api_key)
-
-        # The python SDK supports image generation using the special imagegeneration model.
-        # See: https://ai.google.dev/gemini-api/docs/image-generation
-        # The exact return types may vary between SDK versions, so we attempt robust extraction.
-        model = genai.GenerativeModel(self.model_name)
-
-        kwargs = {}
-        # Some SDK versions accept image_size like "1024x1024" or a tuple
-        kwargs["size"] = size
-        if seed is not None:
-            kwargs["seed"] = seed
+        # Compose prompt; keep it simple and human-readable
+        width, height = _parse_size(size)
+        full_prompt = prompt
         if negative_prompt:
-            kwargs["negative_prompt"] = negative_prompt
+            full_prompt += f"\nNegative prompt: {negative_prompt}"
+        # Encourage target size (the model may not guarantee exact dimensions)
+        full_prompt += f"\nTarget size: {width}x{height}"
 
-        # Attempt to call generate_images; if not available, surface a helpful error.
-        if not hasattr(model, "generate_images"):
+        # Use the new google-genai client
+        try:
+            import google.genai as genai  # type: ignore
+            from google.genai import types  # type: ignore
+        except Exception as e:  # pragma: no cover - import-time environment
             raise RuntimeError(
-                "The installed google-generativeai SDK does not support image generation via generate_images()."
-            )
+                "google-genai is required for the Gemini backend. Install with: pip install google-genai"
+            ) from e
 
-        result = model.generate_images(prompt=prompt, **kwargs)
+        client = genai.Client(api_key=api_key)
 
-        # Try to extract bytes from common representations
-        content: bytes | None = None
-        if hasattr(result, "images") and result.images:
-            first = result.images[0]
-            # Common fields: .bytes, .image.image_bytes, .image.as_png()
-            if hasattr(first, "bytes") and isinstance(first.bytes, (bytes, bytearray)):
-                content = bytes(first.bytes)
-            elif hasattr(first, "image") and hasattr(first.image, "bytes"):
-                content = bytes(first.image.bytes)  # type: ignore[attr-defined]
-            elif hasattr(first, "image") and hasattr(first.image, "as_png"):
-                content = first.image.as_png()  # type: ignore[attr-defined]
-            elif hasattr(first, "image") and hasattr(first.image, "data"):
-                data = first.image.data  # type: ignore[attr-defined]
-                if isinstance(data, (bytes, bytearray)):
-                    content = bytes(data)
-                else:
-                    # Sometimes it may be base64-encoded
-                    try:
-                        content = base64.b64decode(data)
-                    except Exception:
-                        pass
+        # Ask explicitly for IMAGE output; do not set response_mime_type.
+        # The server only allows text mime types there.
+        config = types.GenerateContentConfig(
+            response_modalities=["IMAGE"],
+            media_resolution=getattr(types.MediaResolution, "MEDIA_RESOLUTION_HIGH", None),
+            seed=seed,
+        )
 
-        if not content:
-            # Try direct content field from result
-            if hasattr(result, "image") and hasattr(result.image, "as_png"):
-                content = result.image.as_png()
+        # Generate image from text prompt
+        resp = client.models.generate_content(
+            model=self.model_name,
+            contents=full_prompt,
+            config=config,
+        )
 
-        if not content:
-            raise RuntimeError("Unable to extract image bytes from Gemini response")
+        # Extract first inline image from response
+        content_bytes: Optional[bytes] = None
+        content_type: Optional[str] = None
+        for cand in getattr(resp, "candidates", []) or []:
+            content = getattr(cand, "content", None)
+            if not content:
+                continue
+            for part in getattr(content, "parts", []) or []:
+                inline = getattr(part, "inline_data", None)
+                if inline and isinstance(getattr(inline, "data", None), (bytes, str)):
+                    data = inline.data
+                    if isinstance(data, str):
+                        data = base64.b64decode(data)
+                    content_bytes = data
+                    content_type = getattr(inline, "mime_type", None) or desired_mime
+                    break
+            if content_bytes:
+                break
 
-        fmt_lower = fmt.lower()
-        content_type = f"image/{'jpeg' if fmt_lower == 'jpg' else fmt_lower}"
-        filename = f"gemini_{abs(hash(prompt)) % 1_000_000}.{fmt_lower}"
-        return ImageResult(content=content, content_type=content_type, format=fmt_lower, filename=filename)
+        if not content_bytes:
+            raise RuntimeError("Gemini response did not include any inline image data")
+
+        # Best-effort resize/convert to requested format using Pillow.
+        try:
+            from PIL import Image  # type: ignore
+
+            img = Image.open(io.BytesIO(content_bytes))
+            if img.size != (width, height):
+                img = img.resize((width, height))
+
+            buf = io.BytesIO()
+            fmt_upper = "JPEG" if fmt_l == "jpg" else fmt_l.upper()
+            img.save(buf, format=fmt_upper)
+            content_bytes = buf.getvalue()
+            content_type = f"image/{'jpeg' if fmt_l == 'jpg' else fmt_l}"
+        except Exception:
+            # If Pillow fails, keep original bytes and best-guess content_type
+            if not content_type:
+                content_type = desired_mime
+
+        ext = "jpg" if (content_type or desired_mime).lower().endswith("jpeg") else (content_type or desired_mime).split("/")[-1]
+        filename = f"gemini_{abs(hash(prompt)) % 1_000_000}.{ext}"
+        return ImageResult(content=content_bytes, content_type=content_type, format=ext, filename=filename)
