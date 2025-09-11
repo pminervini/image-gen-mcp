@@ -56,7 +56,7 @@ class QwenImageBackend(ImageBackend):
 
         # Load pipeline; prefer fp16 on GPU/MPS. Keep CPU in fp32.
         kwargs = {"use_safetensors": True}
-        if self._device in ("cuda", "mps"):
+        if self._device in {"cuda", "mps"}:
             kwargs["torch_dtype"] = dtype
 
         pipe = DiffusionPipeline.from_pretrained(self.model_id, **kwargs)
@@ -97,9 +97,11 @@ class QwenImageBackend(ImageBackend):
         # Run pipeline
         out = self._pipe(
             prompt=prompt,
-            negative_prompt=negative_prompt,
+            negative_prompt=" " if not negative_prompt else negative_prompt,
             width=width,
             height=height,
+            num_inference_steps=50,
+            true_cfg_scale=4.0,
             generator=generator,
         )
 
