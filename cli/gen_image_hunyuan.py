@@ -14,15 +14,10 @@ import argparse
 import asyncio
 from pathlib import Path
 
+from imagen.backends.hunyuan import HunyuanBackend
+
 
 async def _run_async(args):
-    try:
-        from imagen.backends.hunyuan import HunyuanBackend
-    except Exception as e:  # pragma: no cover - import-time optional deps
-        raise SystemExit(
-            "Hunyuan backend requires optional deps. Install with: pip install -e .[hunyuan] and install upstream 'hyimage'."
-        ) from e
-
     backend = HunyuanBackend()
     result = await backend.generate_image(
         prompt=args.prompt,

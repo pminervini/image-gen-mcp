@@ -14,15 +14,10 @@ import asyncio
 import sys
 from pathlib import Path
 
+from imagen.backends.qwen import QwenImageBackend
+
 
 async def _run_async(args):
-    try:
-        from imagen.backends.qwen import QwenImageBackend
-    except Exception as e:  # pragma: no cover - import-time optional deps
-        raise SystemExit(
-            "Qwen backend requires optional deps. Install with: pip install -e .[qwen]"
-        ) from e
-
     backend = QwenImageBackend()
     result = await backend.generate_image(
         prompt=args.prompt,

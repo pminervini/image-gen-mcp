@@ -25,7 +25,8 @@ qwen = [
   "diffusers>=0.26.0",
   "torch>=2.1.0",
   "accelerate>=0.30.0",
-  "safetensors>=0.4.2"
+  "safetensors>=0.4.2",
+  "peft>=0.17.0"
 ]
 hunyuan = [
   "torch>=2.1.0",

@@ -11,10 +11,10 @@ import argparse
 import asyncio
 from pathlib import Path
 
+from imagen.backends.gemini import GeminiBackend
+
 
 async def _run_async(args):
-    from imagen.backends.gemini import GeminiBackend
-
     backend = GeminiBackend()
     result = await backend.generate_image(
         prompt=args.prompt,

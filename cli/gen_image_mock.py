@@ -12,11 +12,10 @@ import argparse
 import asyncio
 from pathlib import Path
 
+from imagen.backends.mock import MockBackend
+
 
 async def _run_async(args):
-    # Import lazily to keep import-time dependencies minimal
-    from imagen.backends.mock import MockBackend
-
     backend = MockBackend()
     result = await backend.generate_image(
         prompt=args.prompt,
