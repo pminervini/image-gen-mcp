@@ -3,8 +3,7 @@
 
 # Usage examples (Qwen via diffusers, local):
 #   pip install -e .[qwen]   # once
-#   image-gen-qwen "a cozy cabin" --size 768x768 --fmt png --output cabin.png
-#   python -m cli.qwen_cli "A dragon" --seed 42 --fmt jpg --output dragon.jpg
+#   PYTHONPATH=. python3 cli/qwen-cli.py "A dragon" --seed 42 --fmt jpg --output dragon.jpg
 # Notes:
 #   - Prefers CUDA → MPS → CPU automatically.
 #   - Installs diffusers/torch and related extras via the `[qwen]` extra.

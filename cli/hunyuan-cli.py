@@ -4,8 +4,7 @@
 # Usage examples (Hunyuan local upstream pipeline):
 #   pip install -e .[hunyuan]   # once, plus install upstream 'hyimage' package
 #   export HUNYUANIMAGE_V2_1_MODEL_ROOT=/path/to/ckpts
-#   image-gen-hunyuan "a dragon" --fmt jpg --output dragon.jpg
-#   python -m cli.hunyuan_cli "a sunny field" --size 1024x1024 --fmt png --output field.png
+#   PYTHONPATH=. python3 cli/hunyuan-cli.py "a sunny field" --size 1024x1024 --fmt png --output field.png
 # Notes:
 #   - Runs locally; selects CUDA → MPS → CPU and an efficient dtype.
 #   - Accepts --seed, --size, --negative-prompt; see README for setup.

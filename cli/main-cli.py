@@ -2,10 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Usage examples (direct CLI, no MCP):
-#   image-gen "A red square" --backend mock --fmt png --output red.png
-#   image-gen "A cat photo" --backend gemini --fmt jpg --output cat.jpg
-#   image-gen "a cozy cabin" --backend qwen --size 768x768 --fmt png --output cabin.png
-#   image-gen "a dragon" --backend hunyuan --fmt jpg --output dragon.jpg
+#   PYTHONPATH=. python3 cli/main-cli.py "A red square" --backend mock --fmt png --output red.png
 # Notes:
 #   - Gemini requires GEMINI_API_KEY in your environment.
 #   - Qwen/Hunyuan require optional extras: `pip install -e .[qwen]` / `pip install -e .[hunyuan]`.

@@ -94,9 +94,14 @@ class QwenImageBackend(ImageBackend):
             gen_device = "cuda" if self._device == "cuda" else "cpu"
             generator = torch.Generator(device=gen_device).manual_seed(seed)
 
+        positive_magic = {
+            "en": ", Ultra HD, 4K, cinematic composition.", # for english prompt
+            "zh": ", 超清，4K，电影级构图." # for chinese prompt
+        }
+
         # Run pipeline
         out = self._pipe(
-            prompt=prompt,
+            prompt=prompt + positive_magic["en"],
             negative_prompt=" " if not negative_prompt else negative_prompt,
             width=width,
             height=height,
@@ -106,6 +111,9 @@ class QwenImageBackend(ImageBackend):
         )
 
         image = out.images[0]
+        
+        image.save("test.png")
+        
         buffer = io.BytesIO()
         fmt_upper = fmt.upper()
         if fmt_upper == "JPG":

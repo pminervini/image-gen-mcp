@@ -13,23 +13,26 @@ Note: The Gemini backend requires a `GEMINI_API_KEY`. The mock backend works wit
 - Install (dev):
   - `pip install -e .[dev]`
 
-- Generate an image via CLI (no MCP):
-  - `image-gen "A red square" --backend mock --fmt png --output red.png`
-  - `image-gen "A scenic lake at sunrise" --backend qwen --fmt png --output lake.png`
-  - `image-gen "A futuristic cityscape" --backend hunyuan --fmt jpg --output city.jpg`
+- Generate an image via CLI (no MCP), using local scripts:
+  - `PYTHONPATH=. python3 cli/main-cli.py "A red square" --backend mock --fmt png --output red.png`
+  - `PYTHONPATH=. python3 cli/main-cli.py "A scenic lake at sunrise" --backend qwen --fmt png --output lake.png`
+  - `PYTHONPATH=. python3 cli/main-cli.py "A futuristic cityscape" --backend hunyuan --fmt jpg --output city.jpg`
 
-### Backend-Specific CLIs (direct)
+### Backend-Specific Scripts (direct)
 
-- Mock: `image-gen-mock "A red square" --fmt png --output red.png`
-- Gemini: `image-gen-gemini "A beach at sunset" --fmt png --output beach.png`
-- Qwen (diffusers, local): `image-gen-qwen "a cozy cabin" --fmt png --output cabin.png`
-- Hunyuan (local upstream pipeline): `image-gen-hunyuan "a dragon" --fmt jpg --output dragon.jpg`
+Run CLI scripts in `cli/` directly during development using project imports:
+
+- Main: `PYTHONPATH=. python3 cli/main-cli.py "A red square" --backend mock --fmt png --output red.png`
+- Mock: `PYTHONPATH=. python3 cli/mock-cli.py "A red square" --fmt png --output red.png`
+- Gemini: `export GEMINI_API_KEY=... && PYTHONPATH=. python3 cli/gemini-cli.py "A beach at sunset" --fmt png --output beach.png`
+- Qwen: `PYTHONPATH=. python3 cli/qwen-cli.py "a cozy cabin" --size 768x768 --fmt png --output cabin.png`
+- Hunyuan: `PYTHONPATH=. python3 cli/hunyuan-cli.py "a dragon" --fmt jpg --output dragon.jpg`
 
 ## MCP Server
 
 Run the MCP server over stdio:
 
-- `image-gen-mcp --transport stdio`
+- `PYTHONPATH=. python3 -m imagen.mcp --transport stdio`
 
 Tools:
 
@@ -46,7 +49,7 @@ Tools:
 - Uses Hugging Face diffusers to run `Qwen/Qwen-Image` locally.
 - Prefers CUDA, then MPS, then CPU.
 - Install optional dependencies: `pip install -e .[qwen]`
-- Example: `image-gen "a cozy cabin in the woods" --backend qwen --fmt png --output cabin.png`
+- Example: `PYTHONPATH=. python3 cli/main-cli.py "a cozy cabin in the woods" --backend qwen --fmt png --output cabin.png`
 
 ## Hunyuan Backend (local upstream pipeline)
 
@@ -59,7 +62,7 @@ Tools:
   - Download checkpoints and set `HUNYUANIMAGE_V2_1_MODEL_ROOT=/path/to/ckpts` (or set `HUNYUAN_MODEL_ROOT` which this project maps to the upstream env var)
 - The backend auto-selects device: CUDA → MPS → CPU, and uses an efficient dtype (bf16/fp16/fp32) based on hardware.
 - Optional envs: `HUNYUAN_MODEL_NAME` (`hunyuanimage-v2.1` or `hunyuanimage-v2.1-distilled`), `HUNYUAN_USE_REPROMPT=1`, `HUNYUAN_USE_REFINER=1`.
-- Example: `image-gen "a dragon flying over mountains" --backend hunyuan --fmt jpg --output dragon.jpg`
+- Example: `PYTHONPATH=. python3 cli/main-cli.py "a dragon flying over mountains" --backend hunyuan --fmt jpg --output dragon.jpg`
 
 ## Development
 
@@ -69,7 +72,7 @@ Tools:
 ## Project Layout
 
 - `imagen/` — package with MCP server and backends
-- `cli/` — CLI (`main-cli.py`)
+- `cli/` — CLI scripts for local debugging (`main-cli.py`, backend-specific `*-cli.py`)
 - `tests/` — unit tests
 
 ## Notes

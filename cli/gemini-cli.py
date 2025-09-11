@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Usage examples (Gemini backend):
-#   export GEMINI_API_KEY=... && image-gen-gemini "A beach at sunset" --fmt png --output beach.png
-#   python -m cli.gemini_cli "A robot" --size 512x512 --fmt jpg --output robot.jpg
+#   export GEMINI_API_KEY=... && PYTHONPATH=. python3 cli/gemini-cli.py "A robot" --size 512x512 --fmt jpg --output robot.jpg
 # Notes:
 #   - Requires google-genai and GEMINI_API_KEY set in the environment.
 

@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Usage examples (Mock backend, offline):
-#   image-gen-mock "A red square" --fmt png --output red.png
-#   python -m cli.mock_cli "Hello world" --size 512x512 --fmt jpg --output hello.jpg
+#   PYTHONPATH=. python3 cli/mock-cli.py "Hello world" --size 512x512 --fmt jpg --output hello.jpg
 # Notes:
 #   - No external services required; uses Pillow to synthesize images.
 #   - Supports --seed, --size, --negative-prompt.
