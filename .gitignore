@@ -7,6 +7,7 @@ __pycache__/
 AGENTS.md
 CLAUDE.md
 GEMINI.md
+QWEN.md
 
 # C extensions
 *.so
